@@ -1,0 +1,37 @@
+# DATA MENTAH IPUMS - DILARANG PUSH KE GITHUB
+data/raw/*.csv
+data/raw/*.gz
+data/raw/*.zip
+data/raw/*.dat
+
+# Docker volumes
+*.log
+*.pid
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml

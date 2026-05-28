@@ -1,0 +1,29 @@
+# ==============================================================================
+# Dockerfile.spark — PySpark + Delta Lake environment
+# ==============================================================================
+
+FROM bitnami/spark:3.5.0
+
+USER root
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    pyspark==3.5.1 \
+    delta-spark==3.2.0 \
+    pandas==2.2.2 \
+    numpy==1.26.4 \
+    pyarrow==16.1.0 \
+    matplotlib==3.9.0 \
+    scipy==1.13.1
+
+# Buat direktori kerja
+RUN mkdir -p /opt/spark/scripts /opt/spark/data
+
+WORKDIR /opt/spark
+
+# COPY ../scripts tidak bisa pakai path relatif keluar context
+# Scripts di-mount via volume di docker-compose.yml
+
+EXPOSE 8080 8081 7077 4040
+
+USER 1001
