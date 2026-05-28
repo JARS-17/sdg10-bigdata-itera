@@ -35,7 +35,7 @@
 
 ## 🎯 Deskripsi Proyek
 
-Proyek ini merancang dan mengimplementasikan **sistem pemrosesan data skala besar** untuk menganalisis **ketimpangan pendapatan** dalam konteks ***Sustainable Development Goal 10 (SDG 10 — Reduced Inequalities)***. 
+Proyek ini merancang dan mengimplementasikan **sistem pemrosesan data skala besar** untuk menganalisis **ketimpangan pendapatan** dalam konteks ***Sustainable Development Goal 10 (SDG 10 Reduced Inequalities)***. 
 
 Menggunakan **Medallion Architecture** (Bronze → Silver → Gold) yang dijalankan pada **Apache Spark cluster terdistribusi** dan dikontainerisasi dengan **Docker**, sistem ini mampu memproses ratusan ribu hingga jutaan baris data mikro sensus individu secara efisien, menghasilkan metrik ketimpangan (Gini coefficient, Palma ratio, Theil index, dan *shared prosperity premium*), serta menyajikannya melalui **dashboard interaktif Streamlit**.
 
@@ -122,7 +122,7 @@ Menggunakan **Medallion Architecture** (Bronze → Silver → Gold) yang dijalan
 | **Estimasi Baris** | **~800.000 – 1.300.000 baris** |
 | **Ukuran File Mentah** | ~1.2 – 2.5 GB (CSV hasil ekstraksi dari .csv.gz) |
 | **Variabel Inti** | `INCTOT`, `INCEARN`, `PERWT`, `AGE`, `SEX`, `EDATTAIN`, `EMPSTAT`, `OCCISCO`, `INDGEN` |
-| **Lisensi** | Academic/Research Use Only — redistribution dilarang |
+| **Lisensi** | Academic/Research Use Only dan redistribution dilarang |
 
 > ⚠️ **Peringatan:** Data mentah IPUMS **tidak boleh di-push ke GitHub publik** sesuai ketentuan lisensi. Hanya kode pipeline, hasil agregat (Gold layer), dan dokumentasi yang dipublikasikan.
 
@@ -328,7 +328,7 @@ Setiap anggota tim harus memiliki akun IPUMS International yang teregistrasi sec
 | Benchmark & Polish | ⚪ Pending | Hari 6 |
 | Final Testing & Submit | ⚪ Pending | Hari 7 |
 
-**Timeline:** 7 Hari (Senin — Minggu)  
+**Timeline:** 7 Hari (Senin - Minggu)  
 **Metodologi:** Agile Daily Sync (19:00 WIB)
 
 ---
