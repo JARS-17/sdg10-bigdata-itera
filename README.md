@@ -1,4 +1,4 @@
-# SDG 10 Big Data Analytics — Medallion Architecture
+# SDG 10 Big Data Analytics and Medallion Architecture
 
 <p align="center">
   <img src="https://img.shields.io/badge/Apache%20Spark-3.5-orange?style=for-the-badge&logo=apachespark&logoColor=white" />
