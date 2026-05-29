@@ -48,11 +48,11 @@ Menggunakan **Medallion Architecture** (Bronze → Silver → Gold) yang dijalan
 
 | No | Nama | Peran | Tanggung Jawab Utama |
 |:---:|:---|:---|:---|
-| 1 | **Ginda Fajri Adi Marpaung** | 🎯 Ketua / Project Integrator | Koordinasi harian, merge kode, finalisasi proposal & presentasi, integrasi antar-modul |
-| 2 | **Luthfia Laila Ramadhani** | 🗃️ Data Engineer | Handle data IPUMS, bangun Bronze → Silver layer, data quality & profiling |
-| 3 | **Vany Salsabila Putri** | ⚡ Spark Analytics Developer | Bangun Gold layer (Gini UDF, kuintil, Theil index), optimasi query Spark |
+| 1 | **Ginda Fajar Riadi Marpaung** | 🎯 Ketua / Project Integrator | Koordinasi harian, merge kode, finalisasi proposal & presentasi, integrasi antar-modul |
+| 2 | **Vany Salsabilla Putri** | 🗃️ Data Engineer | Handle data IPUMS, bangun Bronze → Silver layer, data quality & profiling |
+| 3 | **Fathya Intami Gusd** | ⚡ Spark Analytics Developer | Bangun Gold layer (Gini UDF, kuintil, Theil index), optimasi query Spark |
 | 4 | **Malika Azzahra Salsabila** | 📊 Baseline & Benchmark Specialist | Pipeline Pandas sekuensial, ukur throughput & latensi, bandingkan Spark vs Pandas |
-| 5 | **Fathya Intami Gusda** | 🖥️ Dashboard & DevOps Engineer | Setup Docker Compose (Spark + Streamlit), bangun dashboard interaktif, diagram arsitektur |
+| 5 | **Luthfia Laila Ramadhani** | 🖥️ Dashboard & DevOps Engineer | Setup Docker Compose (Spark + Streamlit), bangun dashboard interaktif, diagram arsitektur |
 
 ---
 
