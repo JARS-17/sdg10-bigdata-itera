@@ -2,6 +2,7 @@
 # silver_layer.py — Cleaning & Transformasi Bronze → Silver Layer
 # ==============================================================================
 
+import time
 import logging
 
 from pyspark.sql import SparkSession, DataFrame
@@ -13,7 +14,7 @@ from config import (
     BRONZE_DIR, SILVER_DIR,
     BRONZE_FILE, SILVER_FILE,
     SILVER_KEEP_COLS, INCOME_COLS, ID_COLS,
-    MIN_AGE, MAX_AGE, MIN_INCOME, INCOME_TOP_CAP
+    MIN_AGE, MAX_AGE, MIN_INCOME, INCOME_TOP_CAP, PPP_FACTOR
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -53,6 +54,16 @@ def cast_income_columns(df: DataFrame) -> DataFrame:
     for col in INCOME_COLS:
         if col in df.columns:
             df = df.withColumn(col, F.col(col).cast(DoubleType()))
+    return df
+
+
+def deduplicate_records(df: DataFrame) -> DataFrame:
+    """Deduplikasi berdasarkan kombinasi unik individu: SERIAL + PERNUM"""
+    if "SERIAL" in df.columns and "PERNUM" in df.columns:
+        before = df.count()
+        df = df.dropDuplicates(["SERIAL", "PERNUM"])
+        after = df.count()
+        logger.info(f"Deduplikasi: {before:,} → {after:,} baris (dihapus: {before - after:,})")
     return df
 
 
@@ -98,6 +109,9 @@ def drop_nulls(df: DataFrame) -> DataFrame:
 def add_derived_columns(df: DataFrame) -> DataFrame:
     """Tambahkan kolom turunan yang berguna."""
     if "INCTOT" in df.columns:
+        # Normalisasi PPP (Purchasing Power Parity)
+        df = df.withColumn("income_ppp", F.col("INCTOT") * PPP_FACTOR)
+        
         # Kategori pendapatan
         df = df.withColumn(
             "income_category",
@@ -121,20 +135,24 @@ def add_derived_columns(df: DataFrame) -> DataFrame:
 def write_silver(df: DataFrame) -> None:
     output_path = str(SILVER_DIR / SILVER_FILE)
     logger.info(f"Menyimpan Silver Layer ke: {output_path}")
+    t0 = time.time()
     (
         df.write
         .mode("overwrite")
         .parquet(output_path)
     )
-    logger.info("✅ Silver Layer berhasil disimpan.")
+    elapsed = time.time() - t0
+    logger.info(f"✅ Silver Layer berhasil disimpan dalam {elapsed:.2f} detik.")
 
 
 def run() -> None:
+    t_start = time.time()
     spark = create_spark_session()
 
     df = load_bronze(spark)
     df = select_columns(df)
     df = cast_income_columns(df)
+    df = deduplicate_records(df)
     df = filter_age(df)
     df = filter_income(df)
     df = drop_nulls(df)
@@ -142,7 +160,9 @@ def run() -> None:
 
     write_silver(df)
     spark.stop()
-    logger.info("🏁 Silver Layer pipeline selesai.")
+    
+    total_elapsed = time.time() - t_start
+    logger.info(f"🏁 Silver Layer pipeline selesai. Total Waktu: {total_elapsed:.2f} detik.")
 
 
 if __name__ == "__main__":
