@@ -119,7 +119,7 @@ Menggunakan **Medallion Architecture** (Bronze → Silver → Gold) yang dijalan
 | **Pengelola** | Minnesota Population Center, University of Minnesota |
 | **Negara** | Brazil 2010, Mexico 2010 |
 | **Unit Observasi** | Individu (*person records*) |
-| **Estimasi Baris** | **~800.000 – 1.300.000 baris** |
+| **Estimasi Baris** | **32,257,874 baris** |
 | **Ukuran File Mentah** | ~1.2 – 2.5 GB (CSV hasil ekstraksi dari .csv.gz) |
 | **Variabel Inti** | `INCTOT`, `INCEARN`, `PERWT`, `AGE`, `SEX`, `EDATTAIN`, `EMPSTAT`, `OCCISCO`, `INDGEN` |
 | **Lisensi** | Academic/Research Use Only dan redistribution dilarang |
