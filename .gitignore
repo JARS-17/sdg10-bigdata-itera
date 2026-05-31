@@ -4,6 +4,20 @@ data/raw/*.gz
 data/raw/*.zip
 data/raw/*.dat
 
+# Spark output
+data/bronze/*
+data/silver/*
+data/gold/*
+data/bronze/*.zip
+
+# Keep folder structure
+!data/bronze/.gitkeep
+!data/silver/.gitkeep
+!data/gold/.gitkeep
+
+# Parquet files
+*.parquet
+
 # Docker volumes
 *.log
 *.pid
