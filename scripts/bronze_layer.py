@@ -2,6 +2,7 @@
 # bronze_layer.py — Ingest data mentah IPUMS → Bronze Layer (Parquet)
 # ==============================================================================
 
+import time
 import logging
 from pathlib import Path
 
@@ -32,13 +33,9 @@ def create_spark_session() -> SparkSession:
 
 
 def ingest_ipums_csv(spark: SparkSession, filepath: Path) -> DataFrame:
-    """
-    Baca file CSV hasil export IPUMS.
-
-    IPUMS biasanya menghasilkan file .csv atau .dat dengan header.
-    Sesuaikan dengan format data yang Anda download.
-    """
+    """Baca file CSV hasil export IPUMS."""
     logger.info(f"Membaca data dari: {filepath}")
+    t0 = time.time()
     df = (
         spark.read
         .option("header", "true")
@@ -46,7 +43,11 @@ def ingest_ipums_csv(spark: SparkSession, filepath: Path) -> DataFrame:
         .option("nullValue", "")
         .csv(str(filepath))
     )
-    logger.info(f"Total baris: {df.count():,} | Kolom: {len(df.columns)}")
+    total_rows = df.count()
+    elapsed = time.time() - t0
+    throughput = total_rows / elapsed if elapsed > 0 else 0
+    logger.info(f"Ingesti selesai: {elapsed:.2f} detik | Throughput: {throughput:,.2f} baris/detik")
+    logger.info(f"Total baris: {total_rows:,} | Kolom: {len(df.columns)}")
     return df
 
 
@@ -60,19 +61,23 @@ def add_metadata(df: DataFrame, source_file: str) -> DataFrame:
 
 
 def write_bronze(df: DataFrame) -> None:
-    """Simpan Bronze Layer ke Parquet."""
+    """Simpan Bronze Layer ke Parquet dengan partisi."""
     output_path = str(BRONZE_DIR / BRONZE_FILE)
-    logger.info(f"Menyimpan Bronze Layer ke: {output_path}")
+    logger.info(f"Menyimpan Bronze Layer ke: {output_path} (Partition By: COUNTRY, YEAR)")
+    t0 = time.time()
     (
         df.write
+        .partitionBy("COUNTRY", "YEAR")
         .mode("overwrite")
         .parquet(output_path)
     )
-    logger.info("✅ Bronze Layer berhasil disimpan.")
+    elapsed = time.time() - t0
+    logger.info(f"✅ Bronze Layer berhasil disimpan dalam {elapsed:.2f} detik.")
 
 
-def run(source_filename: str = "ipums_data.csv") -> None:
+def run(source_filename: str = "ipums_brazil_mexico_2010.csv") -> None:
     """Entry point pipeline Bronze Layer."""
+    t_start = time.time()
     spark = create_spark_session()
     source_path = RAW_DIR / source_filename
 
@@ -87,7 +92,8 @@ def run(source_filename: str = "ipums_data.csv") -> None:
     write_bronze(df)
 
     spark.stop()
-    logger.info("🏁 Bronze Layer pipeline selesai.")
+    total_elapsed = time.time() - t_start
+    logger.info(f"🏁 Bronze Layer pipeline selesai. Total Waktu: {total_elapsed:.2f} detik.")
 
 
 if __name__ == "__main__":
