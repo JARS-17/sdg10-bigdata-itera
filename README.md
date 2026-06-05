@@ -320,13 +320,13 @@ Setiap anggota tim harus memiliki akun IPUMS International yang teregistrasi sec
 
 | Milestone | Status | Hari Target |
 |:---|:---:|:---:|
-| Setup Infrastruktur | 🟡 In Progress | Hari 1 |
-| Bronze Layer | ⚪ Pending | Hari 2 |
-| Silver Layer | ⚪ Pending | Hari 3 |
-| Gold Layer | ⚪ Pending | Hari 4 |
-| Dashboard Streamlit | ⚪ Pending | Hari 5 |
-| Benchmark & Polish | ⚪ Pending | Hari 6 |
-| Final Testing & Submit | ⚪ Pending | Hari 7 |
+| Setup Infrastruktur | 🟡 Done | Hari 1 |
+| Bronze Layer | ⚪ Done | Hari 2 |
+| Silver Layer | ⚪ Done | Hari 3 |
+| Gold Layer | ⚪ Done | Hari 4 |
+| Dashboard Streamlit | ⚪ Done | Hari 5 |
+| Benchmark & Polish | ⚪ Done | Hari 6 |
+| Final Testing & Submit | ⚪ Progress | Hari 7 |
 
 **Timeline:** 7 Hari (Senin - Minggu)  
 **Metodologi:** Agile Daily Sync (19:00 WIB)
