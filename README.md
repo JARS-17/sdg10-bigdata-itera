@@ -318,15 +318,16 @@ Setiap anggota tim harus memiliki akun IPUMS International yang teregistrasi sec
 
 ## 🚦 Status Proyek
 
-| Milestone | Status | Hari Target |
-|:---|:---:|:---:|
-| Setup Infrastruktur | 🟡 Done | Hari 1 |
-| Bronze Layer | ⚪ Done | Hari 2 |
-| Silver Layer | ⚪ Done | Hari 3 |
-| Gold Layer | ⚪ Done | Hari 4 |
-| Dashboard Streamlit | ⚪ Done | Hari 5 |
-| Benchmark & Polish | ⚪ Done | Hari 6 |
-| Final Testing & Submit | ⚪ Progress | Hari 7 |
+| Milestone              |    Status   | Hari Target |
+| :--------------------- | :---------: | :---------: |
+| Setup Infrastruktur    |   🟢 Done   |    Hari 1   |
+| Bronze Layer           |   🟢 Done   |    Hari 2   |
+| Silver Layer           |   🟢 Done   |    Hari 3   |
+| Gold Layer             |   🟢 Done   |    Hari 4   |
+| Dashboard Streamlit    |   🟢 Done   |    Hari 5   |
+| Benchmark & Polish     |   🟢 Done   |    Hari 6   |
+| Final Testing & Submit | 🟡 Progress |    Hari 7   |
+
 
 **Timeline:** 7 Hari (Senin - Minggu)  
 **Metodologi:** Agile Daily Sync (19:00 WIB)
@@ -337,7 +338,8 @@ Setiap anggota tim harus memiliki akun IPUMS International yang teregistrasi sec
 
 [1] Y. Liu et al., "A big data approach to assess progress towards Sustainable Development Goals for cities of varying sizes," *Communications Earth & Environment*, vol. 4, no. 1, p. 82, 2023.
 
-[2] Minnesota Population Center, *Integrated Public Use Microdata Series, International: Version 7.2*, Minneapolis, MN: IPUMS, 2019. https://doi.org/10.18128/D020.V7.2
+[2] Steven Ruggles, Lara Cleveland, Rodrigo Lovaton, Sula Sarkar, Matthew Sobek, Derek Burk, Dan Ehrlich, Jane Lee, and Nate Merrill. Integrated Public Use Microdata Series, International: Version 7.6 [dataset]. Minneapolis, MN: IPUMS, 2025.
+https://doi.org/10.18128/D020.V7.7
 
 [3] World Bank, *Atlas of Sustainable Development Goals 2020: From World Development Indicators*, Washington, DC: World Bank, 2020.
 
