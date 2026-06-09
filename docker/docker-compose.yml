@@ -67,6 +67,7 @@ services:
                streamlit run dashboard/dashboard.py --server.port=8501 --server.address=0.0.0.0"
     volumes:
       - ../:/app
+      - ../data:/app/data
     ports:
       - "8501:8501"
     depends_on:
@@ -86,7 +87,9 @@ services:
       - ../notebooks:/home/jovyan/notebooks
       - ../data:/home/jovyan/data
       - ../scripts:/home/jovyan/scripts
+      - ../dashboard:/home/jovyan/dashboard
     depends_on:
+
       - spark-master
     networks:
       - spark-network

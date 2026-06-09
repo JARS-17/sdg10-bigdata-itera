@@ -8,6 +8,7 @@ from pathlib import Path
 
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.types import StructType, StructField, IntegerType, DoubleType, LongType
 
 from config import (
     SPARK_APP_NAME, SPARK_MASTER, SPARK_LOG_LEVEL,
@@ -24,30 +25,46 @@ def create_spark_session() -> SparkSession:
         SparkSession.builder
         .appName(f"{SPARK_APP_NAME} - Bronze")
         .master(SPARK_MASTER)
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
         .getOrCreate()
     )
     spark.sparkContext.setLogLevel(SPARK_LOG_LEVEL)
     return spark
 
 
+BRONZE_SCHEMA = StructType([
+    StructField("COUNTRY", IntegerType(), True),
+    StructField("YEAR", IntegerType(), True),
+    StructField("SAMPLE", LongType(), True),
+    StructField("SERIAL", LongType(), True),
+    StructField("HHWT", DoubleType(), True),
+    StructField("PERNUM", IntegerType(), True),
+    StructField("PERWT", DoubleType(), True),
+    StructField("AGE", IntegerType(), True),
+    StructField("SEX", IntegerType(), True),
+    StructField("EDATTAIN", IntegerType(), True),
+    StructField("EDATTAIND", IntegerType(), True),
+    StructField("EMPSTAT", IntegerType(), True),
+    StructField("EMPSTATD", IntegerType(), True),
+    StructField("OCCISCO", IntegerType(), True),
+    StructField("INDGEN", IntegerType(), True),
+    StructField("INCTOT", DoubleType(), True),
+    StructField("INCEARN", DoubleType(), True),
+])
+
+
 def ingest_ipums_csv(spark: SparkSession, filepath: Path) -> DataFrame:
-    """Baca file CSV hasil export IPUMS."""
+    """
+    Baca file CSV hasil export IPUMS secara efisien menggunakan skema eksplisit.
+    """
     logger.info(f"Membaca data dari: {filepath}")
-    t0 = time.time()
     df = (
         spark.read
         .option("header", "true")
-        .option("inferSchema", "true")
+        .schema(BRONZE_SCHEMA)
         .option("nullValue", "")
         .csv(str(filepath))
     )
-    total_rows = df.count()
-    elapsed = time.time() - t0
-    throughput = total_rows / elapsed if elapsed > 0 else 0
-    logger.info(f"Ingesti selesai: {elapsed:.2f} detik | Throughput: {throughput:,.2f} baris/detik")
-    logger.info(f"Total baris: {total_rows:,} | Kolom: {len(df.columns)}")
+    logger.info(f"Kolom dibaca: {len(df.columns)}")
     return df
 
 
@@ -61,35 +78,39 @@ def add_metadata(df: DataFrame, source_file: str) -> DataFrame:
 
 
 def write_bronze(df: DataFrame) -> None:
-    """Simpan Bronze Layer ke Parquet dengan partisi."""
+    """Simpan Bronze Layer ke Parquet."""
     output_path = str(BRONZE_DIR / BRONZE_FILE)
-    logger.info(f"Menyimpan Bronze Layer ke: {output_path} (Partition By: COUNTRY, YEAR)")
-    t0 = time.time()
+    logger.info(f"Menyimpan Bronze Layer ke: {output_path}")
     (
         df.write
-        .partitionBy("COUNTRY", "YEAR")
         .mode("overwrite")
         .parquet(output_path)
     )
-    elapsed = time.time() - t0
-    logger.info(f"✅ Bronze Layer berhasil disimpan dalam {elapsed:.2f} detik.")
+    logger.info("✅ Bronze Layer berhasil disimpan.")
 
 
 def run(source_filename: str = "ipums_brazil_mexico_2010.csv") -> None:
     """Entry point pipeline Bronze Layer."""
     t_start = time.time()
     spark = create_spark_session()
-    source_path = RAW_DIR / source_filename
+    output_path = BRONZE_DIR / BRONZE_FILE
 
-    if not source_path.exists():
-        logger.error(f"File tidak ditemukan: {source_path}")
-        logger.error("Pastikan Anda sudah menempatkan data IPUMS di folder data/raw/")
-        spark.stop()
-        return
-
-    df = ingest_ipums_csv(spark, source_path)
-    df = add_metadata(df, source_file=str(source_path))
-    write_bronze(df)
+    # Periksa apakah parquet sudah ada (sesuai request user)
+    if output_path.exists() and any(output_path.iterdir()):
+        logger.info(f"Bronze Parquet sudah tersedia di: {output_path}. Membaca data...")
+        df = spark.read.parquet(str(output_path))
+        logger.info("✅ Bronze Parquet berhasil dimuat.")
+    else:
+        logger.info("Bronze Parquet tidak ditemukan. Melakukan ingesti dari CSV...")
+        source_path = RAW_DIR / source_filename
+        if not source_path.exists():
+            logger.error(f"File tidak ditemukan: {source_path}")
+            logger.error("Pastikan Anda sudah menempatkan data IPUMS di folder data/raw/")
+            spark.stop()
+            return
+        df = ingest_ipums_csv(spark, source_path)
+        df = add_metadata(df, source_file=str(source_path))
+        write_bronze(df)
 
     spark.stop()
     total_elapsed = time.time() - t_start

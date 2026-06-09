@@ -45,10 +45,11 @@ ID_COLS = [
     "YEAR",
     "SERIAL",
     "PERNUM",
-    "WTFINL",    # Final weight (untuk analisis tertimbang)
+    "PERWT",    # Final weight (untuk analisis tertimbang)
     "AGE",
     "SEX",
     "RACE",
+    "EDUC",
     "EDATTAIN",
     "EMPSTAT",
     "STATEFIP",
