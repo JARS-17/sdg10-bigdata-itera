@@ -255,6 +255,63 @@ def palma_ratio(values: Union[np.ndarray, pd.Series],
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# SDG 10.2.1 (PROPORTION BELOW 50% MEDIAN INCOME)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def proportion_below_50_median(values: Union[np.ndarray, pd.Series],
+                               weights: Optional[Union[np.ndarray, pd.Series]] = None) -> float:
+    """
+    Hitung Indikator SDG 10.2.1: Proporsi populasi yang hidup di bawah
+    50% dari median pendapatan.
+    
+    Parameters
+    ----------
+    values  : array-like, nilai pendapatan
+    weights : array-like opsional, bobot survei
+    
+    Returns
+    -------
+    float   : Proporsi populasi (0.0 - 1.0)
+    """
+    values = np.asarray(values, dtype=float)
+    if weights is None:
+        weights = np.ones_like(values)
+    else:
+        weights = np.asarray(weights, dtype=float)
+
+    mask    = values >= 0
+    values  = values[mask]
+    weights = weights[mask]
+
+    if len(values) == 0:
+        return np.nan
+
+    # Urutkan untuk mencari median tertimbang
+    sorted_idx = np.argsort(values)
+    values  = values[sorted_idx]
+    weights = weights[sorted_idx]
+
+    cum_w   = np.cumsum(weights)
+    total_w = cum_w[-1]
+
+    # Cari nilai median (titik di mana cumulative weight mencapai 50%)
+    median_idx = np.searchsorted(cum_w, 0.5 * total_w)
+    median_income = values[median_idx]
+    
+    if median_income == 0:
+        return 0.0
+
+    # Hitung batas 50% dari median
+    threshold = 0.5 * median_income
+
+    # Hitung total bobot untuk populasi di bawah threshold
+    below_thresh = values < threshold
+    prop = np.sum(weights[below_thresh]) / total_w
+
+    return float(prop)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # LORENZ CURVE DATA
 # ──────────────────────────────────────────────────────────────────────────────
 

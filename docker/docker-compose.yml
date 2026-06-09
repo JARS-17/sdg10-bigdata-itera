@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   spark-master:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: spark-master
     hostname: spark-master
     environment:
@@ -15,13 +15,13 @@ services:
       - "8080:8080"   # Spark Master Web UI
       - "7077:7077"   # Spark Master RPC
     volumes:
-      - ./data:/opt/spark/data
-      - ./scripts:/opt/spark/scripts
+      - ../data:/opt/spark/data
+      - ../scripts:/opt/spark/scripts
     networks:
       - spark-network
 
   spark-worker-1:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: spark-worker-1
     environment:
       - SPARK_MODE=worker
@@ -33,14 +33,14 @@ services:
     ports:
       - "8081:8081"   # Worker Web UI
     volumes:
-      - ./data:/opt/spark/data
+      - ../data:/opt/spark/data
     depends_on:
       - spark-master
     networks:
       - spark-network
 
   spark-worker-2:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: spark-worker-2
     environment:
       - SPARK_MODE=worker
@@ -52,7 +52,7 @@ services:
     ports:
       - "8082:8082"
     volumes:
-      - ./data:/opt/spark/data
+      - ../data:/opt/spark/data
     depends_on:
       - spark-master
     networks:
@@ -66,7 +66,8 @@ services:
       bash -c "pip install --no-cache-dir streamlit plotly pandas pyarrow &&
                streamlit run dashboard/dashboard.py --server.port=8501 --server.address=0.0.0.0"
     volumes:
-      - ./:/app
+      - ../:/app
+      - ../data:/app/data
     ports:
       - "8501:8501"
     depends_on:
@@ -83,9 +84,10 @@ services:
       - JUPYTER_ENABLE_LAB=yes
       - GRANT_SUDO=yes
     volumes:
-      - ./notebooks:/home/jovyan/notebooks
-      - ./data:/home/jovyan/data
-      - ./scripts:/home/jovyan/scripts
+      - ../notebooks:/home/jovyan/notebooks
+      - ../data:/home/jovyan/data
+      - ../scripts:/home/jovyan/scripts
+      - ../dashboard:/home/jovyan/dashboard
     depends_on:
       - spark-master
     networks:

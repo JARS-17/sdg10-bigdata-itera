@@ -7,6 +7,7 @@ from pathlib import Path
 
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.types import StructType, StructField, IntegerType, DoubleType, LongType
 
 from config import (
     SPARK_APP_NAME, SPARK_MASTER, SPARK_LOG_LEVEL,
@@ -23,30 +24,46 @@ def create_spark_session() -> SparkSession:
         SparkSession.builder
         .appName(f"{SPARK_APP_NAME} - Bronze")
         .master(SPARK_MASTER)
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
         .getOrCreate()
     )
     spark.sparkContext.setLogLevel(SPARK_LOG_LEVEL)
     return spark
 
 
+BRONZE_SCHEMA = StructType([
+    StructField("COUNTRY", IntegerType(), True),
+    StructField("YEAR", IntegerType(), True),
+    StructField("SAMPLE", LongType(), True),
+    StructField("SERIAL", LongType(), True),
+    StructField("HHWT", DoubleType(), True),
+    StructField("PERNUM", IntegerType(), True),
+    StructField("PERWT", DoubleType(), True),
+    StructField("AGE", IntegerType(), True),
+    StructField("SEX", IntegerType(), True),
+    StructField("EDATTAIN", IntegerType(), True),
+    StructField("EDATTAIND", IntegerType(), True),
+    StructField("EMPSTAT", IntegerType(), True),
+    StructField("EMPSTATD", IntegerType(), True),
+    StructField("OCCISCO", IntegerType(), True),
+    StructField("INDGEN", IntegerType(), True),
+    StructField("INCTOT", DoubleType(), True),
+    StructField("INCEARN", DoubleType(), True),
+])
+
+
 def ingest_ipums_csv(spark: SparkSession, filepath: Path) -> DataFrame:
     """
-    Baca file CSV hasil export IPUMS.
-
-    IPUMS biasanya menghasilkan file .csv atau .dat dengan header.
-    Sesuaikan dengan format data yang Anda download.
+    Baca file CSV hasil export IPUMS secara efisien menggunakan skema eksplisit.
     """
     logger.info(f"Membaca data dari: {filepath}")
     df = (
         spark.read
         .option("header", "true")
-        .option("inferSchema", "true")
+        .schema(BRONZE_SCHEMA)
         .option("nullValue", "")
         .csv(str(filepath))
     )
-    logger.info(f"Total baris: {df.count():,} | Kolom: {len(df.columns)}")
+    logger.info(f"Kolom dibaca: {len(df.columns)}")
     return df
 
 
@@ -71,7 +88,7 @@ def write_bronze(df: DataFrame) -> None:
     logger.info("✅ Bronze Layer berhasil disimpan.")
 
 
-def run(source_filename: str = "ipums_data.csv") -> None:
+def run(source_filename: str = "ipums_brazil_mexico_2010.csv") -> None:
     """Entry point pipeline Bronze Layer."""
     spark = create_spark_session()
     source_path = RAW_DIR / source_filename

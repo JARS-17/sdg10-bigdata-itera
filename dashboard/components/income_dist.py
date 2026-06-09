@@ -1,12 +1,7 @@
-# ==============================================================================
-# income_dist.py — Komponen distribusi & Lorenz Curve
-# ==============================================================================
-
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
-
 
 def render_income_distribution(df: pd.DataFrame) -> None:
     """Render visualisasi distribusi pendapatan dan Lorenz Curve."""

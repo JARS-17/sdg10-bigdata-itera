@@ -41,14 +41,16 @@ INCOME_COLS = [
 
 # Kolom identitas / demografis
 ID_COLS = [
+    "COUNTRY",
     "YEAR",
     "SERIAL",
     "PERNUM",
-    "WTFINL",    # Final weight (untuk analisis tertimbang)
+    "PERWT",    # Final weight (untuk analisis tertimbang)
     "AGE",
     "SEX",
     "RACE",
     "EDUC",
+    "EDATTAIN",
     "EMPSTAT",
     "STATEFIP",
 ]
