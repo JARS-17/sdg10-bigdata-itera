@@ -89,6 +89,7 @@ services:
       - ../scripts:/home/jovyan/scripts
       - ../dashboard:/home/jovyan/dashboard
     depends_on:
+
       - spark-master
     networks:
       - spark-network

@@ -2,6 +2,7 @@
 # bronze_layer.py — Ingest data mentah IPUMS → Bronze Layer (Parquet)
 # ==============================================================================
 
+import time
 import logging
 from pathlib import Path
 
@@ -90,21 +91,30 @@ def write_bronze(df: DataFrame) -> None:
 
 def run(source_filename: str = "ipums_brazil_mexico_2010.csv") -> None:
     """Entry point pipeline Bronze Layer."""
+    t_start = time.time()
     spark = create_spark_session()
-    source_path = RAW_DIR / source_filename
+    output_path = BRONZE_DIR / BRONZE_FILE
 
-    if not source_path.exists():
-        logger.error(f"File tidak ditemukan: {source_path}")
-        logger.error("Pastikan Anda sudah menempatkan data IPUMS di folder data/raw/")
-        spark.stop()
-        return
-
-    df = ingest_ipums_csv(spark, source_path)
-    df = add_metadata(df, source_file=str(source_path))
-    write_bronze(df)
+    # Periksa apakah parquet sudah ada (sesuai request user)
+    if output_path.exists() and any(output_path.iterdir()):
+        logger.info(f"Bronze Parquet sudah tersedia di: {output_path}. Membaca data...")
+        df = spark.read.parquet(str(output_path))
+        logger.info("✅ Bronze Parquet berhasil dimuat.")
+    else:
+        logger.info("Bronze Parquet tidak ditemukan. Melakukan ingesti dari CSV...")
+        source_path = RAW_DIR / source_filename
+        if not source_path.exists():
+            logger.error(f"File tidak ditemukan: {source_path}")
+            logger.error("Pastikan Anda sudah menempatkan data IPUMS di folder data/raw/")
+            spark.stop()
+            return
+        df = ingest_ipums_csv(spark, source_path)
+        df = add_metadata(df, source_file=str(source_path))
+        write_bronze(df)
 
     spark.stop()
-    logger.info("🏁 Bronze Layer pipeline selesai.")
+    total_elapsed = time.time() - t_start
+    logger.info(f"🏁 Bronze Layer pipeline selesai. Total Waktu: {total_elapsed:.2f} detik.")
 
 
 if __name__ == "__main__":

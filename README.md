@@ -1,4 +1,4 @@
-# SDG 10 Big Data Analytics — Medallion Architecture
+# SDG 10 Big Data Analytics and Medallion Architecture
 
 <p align="center">
   <img src="https://img.shields.io/badge/Apache%20Spark-3.5-orange?style=for-the-badge&logo=apachespark&logoColor=white" />
@@ -48,11 +48,11 @@ Menggunakan **Medallion Architecture** (Bronze → Silver → Gold) yang dijalan
 
 | No | Nama | Peran | Tanggung Jawab Utama |
 |:---:|:---|:---|:---|
-| 1 | **Ginda Fajri Adi Marpaung** | 🎯 Ketua / Project Integrator | Koordinasi harian, merge kode, finalisasi proposal & presentasi, integrasi antar-modul |
-| 2 | **Luthfia Laila Ramadhani** | 🗃️ Data Engineer | Handle data IPUMS, bangun Bronze → Silver layer, data quality & profiling |
-| 3 | **Vany Salsabila Putri** | ⚡ Spark Analytics Developer | Bangun Gold layer (Gini UDF, kuintil, Theil index), optimasi query Spark |
+| 1 | **Ginda Fajar Riadi Marpaung** | 🎯 Ketua / Project Integrator | Koordinasi harian, merge kode, finalisasi proposal & presentasi, integrasi antar-modul |
+| 2 | **Vany Salsabilla Putri** | 🗃️ Data Engineer | Handle data IPUMS, bangun Bronze → Silver layer, data quality & profiling |
+| 3 | **Fathya Intami Gusd** | ⚡ Spark Analytics Developer | Bangun Gold layer (Gini UDF, kuintil, Theil index), optimasi query Spark |
 | 4 | **Malika Azzahra Salsabila** | 📊 Baseline & Benchmark Specialist | Pipeline Pandas sekuensial, ukur throughput & latensi, bandingkan Spark vs Pandas |
-| 5 | **Fathya Intami Gusda** | 🖥️ Dashboard & DevOps Engineer | Setup Docker Compose (Spark + Streamlit), bangun dashboard interaktif, diagram arsitektur |
+| 5 | **Luthfia Laila Ramadhani** | 🖥️ Dashboard & DevOps Engineer | Setup Docker Compose (Spark + Streamlit), bangun dashboard interaktif, diagram arsitektur |
 
 ---
 
@@ -119,7 +119,7 @@ Menggunakan **Medallion Architecture** (Bronze → Silver → Gold) yang dijalan
 | **Pengelola** | Minnesota Population Center, University of Minnesota |
 | **Negara** | Brazil 2010, Mexico 2010 |
 | **Unit Observasi** | Individu (*person records*) |
-| **Estimasi Baris** | **~800.000 – 1.300.000 baris** |
+| **Estimasi Baris** | **32,257,874 baris** |
 | **Ukuran File Mentah** | ~1.2 – 2.5 GB (CSV hasil ekstraksi dari .csv.gz) |
 | **Variabel Inti** | `INCTOT`, `INCEARN`, `PERWT`, `AGE`, `SEX`, `EDATTAIN`, `EMPSTAT`, `OCCISCO`, `INDGEN` |
 | **Lisensi** | Academic/Research Use Only dan redistribution dilarang |
@@ -318,15 +318,16 @@ Setiap anggota tim harus memiliki akun IPUMS International yang teregistrasi sec
 
 ## 🚦 Status Proyek
 
-| Milestone | Status | Hari Target |
-|:---|:---:|:---:|
-| Setup Infrastruktur | 🟡 In Progress | Hari 1 |
-| Bronze Layer | ⚪ Pending | Hari 2 |
-| Silver Layer | ⚪ Pending | Hari 3 |
-| Gold Layer | ⚪ Pending | Hari 4 |
-| Dashboard Streamlit | ⚪ Pending | Hari 5 |
-| Benchmark & Polish | ⚪ Pending | Hari 6 |
-| Final Testing & Submit | ⚪ Pending | Hari 7 |
+| Milestone              |    Status   | Hari Target |
+| :--------------------- | :---------: | :---------: |
+| Setup Infrastruktur    |   🟢 Done   |    Hari 1   |
+| Bronze Layer           |   🟢 Done   |    Hari 2   |
+| Silver Layer           |   🟢 Done   |    Hari 3   |
+| Gold Layer             |   🟢 Done   |    Hari 4   |
+| Dashboard Streamlit    |   🟢 Done   |    Hari 5   |
+| Benchmark & Polish     |   🟢 Done   |    Hari 6   |
+| Final Testing & Submit | 🟡 Progress |    Hari 7   |
+
 
 **Timeline:** 7 Hari (Senin - Minggu)  
 **Metodologi:** Agile Daily Sync (19:00 WIB)
@@ -337,7 +338,8 @@ Setiap anggota tim harus memiliki akun IPUMS International yang teregistrasi sec
 
 [1] Y. Liu et al., "A big data approach to assess progress towards Sustainable Development Goals for cities of varying sizes," *Communications Earth & Environment*, vol. 4, no. 1, p. 82, 2023.
 
-[2] Minnesota Population Center, *Integrated Public Use Microdata Series, International: Version 7.2*, Minneapolis, MN: IPUMS, 2019. https://doi.org/10.18128/D020.V7.2
+[2] Steven Ruggles, Lara Cleveland, Rodrigo Lovaton, Sula Sarkar, Matthew Sobek, Derek Burk, Dan Ehrlich, Jane Lee, and Nate Merrill. Integrated Public Use Microdata Series, International: Version 7.6 [dataset]. Minneapolis, MN: IPUMS, 2025.
+https://doi.org/10.18128/D020.V7.7
 
 [3] World Bank, *Atlas of Sustainable Development Goals 2020: From World Development Indicators*, Washington, DC: World Bank, 2020.
 

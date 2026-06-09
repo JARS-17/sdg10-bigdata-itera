@@ -3,6 +3,7 @@
 # ==============================================================================
 
 import logging
+import time
 
 import numpy as np
 import pandas as pd
@@ -50,7 +51,13 @@ def create_spark_session() -> SparkSession:
 def load_silver(spark: SparkSession) -> DataFrame:
     path = str(SILVER_DIR / SILVER_FILE)
     logger.info(f"Membaca Silver Layer dari: {path}")
-    return spark.read.parquet(path)
+
+    df = spark.read.parquet(path)
+
+    logger.info("Schema dataset:")
+    df.printSchema()
+
+    return df
 
 
 def compute_gini_by_country_year(df: DataFrame, counts_by_country_year: dict) -> pd.DataFrame:
@@ -140,6 +147,7 @@ def compute_income_stats_by_country_year(df: DataFrame) -> pd.DataFrame:
         )
         .orderBy("COUNTRY", "YEAR")
     )
+
     return result.toPandas()
 
 
@@ -205,15 +213,20 @@ def compute_and_write_demographics(df: DataFrame, spark: SparkSession) -> None:
 def write_gold_parquet(pdf: pd.DataFrame, filename: str, spark: SparkSession) -> None:
     """Simpan Pandas DataFrame ke Gold Layer sebagai Parquet."""
     output_path = str(GOLD_DIR / filename)
+
     sdf = spark.createDataFrame(pdf)
+
     sdf.write.mode("overwrite").parquet(output_path)
+
     logger.info(f"✅ Disimpan ke: {output_path}")
 
 
 def run() -> None:
+    t_start = time.time()
     spark = create_spark_session()
 
     df = load_silver(spark)
+
     df.cache()
 
     # Hitung total counts asli per negara dan tahun secara efisien di Spark
@@ -236,13 +249,30 @@ def run() -> None:
     compute_and_write_demographics(df, spark)
 
     # Simpan ke Gold Layer
-    write_gold_parquet(gini_pdf,     GOLD_GINI_FILE,     spark)
-    write_gold_parquet(quintile_pdf, GOLD_QUINTILE_FILE, spark)
-    write_gold_parquet(stats_pdf,    GOLD_THEIL_FILE,    spark)
+    write_gold_parquet(
+        gini_pdf,
+        GOLD_GINI_FILE,
+        spark
+    )
+
+    write_gold_parquet(
+        quintile_pdf,
+        GOLD_QUINTILE_FILE,
+        spark
+    )
+
+    write_gold_parquet(
+        stats_pdf,
+        GOLD_THEIL_FILE,
+        spark
+    )
 
     df.unpersist()
+
     spark.stop()
-    logger.info("🏁 Gold Layer pipeline selesai.")
+
+    total_elapsed = time.time() - t_start
+    logger.info(f"🏁 Gold Layer pipeline selesai. Total Waktu: {total_elapsed:.2f} detik.")
 
 
 if __name__ == "__main__":

@@ -63,6 +63,7 @@ MIN_AGE        = 18          # Usia minimum untuk analisis kerja
 MAX_AGE        = 65          # Usia maksimum
 MIN_INCOME     = 0           # Pendapatan minimum valid
 INCOME_TOP_CAP = 9_999_998   # Kode IPUMS untuk "tidak terdefinisi"
+PPP_FACTOR     = 0.85        # Faktor Normalisasi Purchasing Power Parity
 
 # ── Quintile / Desil ───────────────────────────────────────────────────────────
 N_QUINTILES = 5
