@@ -5,7 +5,7 @@ data/raw/*.zip
 data/raw/*.dat
 data/bronze/
 data/silver/
-data/gold/
+
 
 # Spark output
 data/bronze/*
@@ -18,8 +18,8 @@ data/bronze/*.zip
 !data/silver/.gitkeep
 !data/gold/.gitkeep
 
-# Parquet files
-*.parquet
+# Allow gold parquet files
+!data/gold/**
 
 # Docker volumes
 *.log
